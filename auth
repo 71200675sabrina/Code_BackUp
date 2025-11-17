@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login / Register</title>
+  <link rel="stylesheet" href="<?= base_url('assets/css/auth.css') ?>">
+
+</head>
+<body>
+
+<div class="container" id="formContainer">
+  <h2 id="formTitle">Create Account</h2>
+
+  <input type="text" id="emailOrPhone" class="input-field" placeholder="Email">
+  <input type="password" id="password" class="input-field" placeholder="Password">
+
+  <button id="btnCreate" class="btn btn-primary">Create Account</button>
+  <button id="btnLogin" class="btn btn-primary" style="display:none;">Login</button>
+
+  <button id="btnGoogle" class="btn btn-google">
+    <img src="<?= base_url('assets/images/google-icon.png') ?>" alt="Google"> Login with Google
+  </button>
+
+  <a class="toggle-link" id="toggleForm">
+    Already have an account? <span>Login Here</span>
+  </a>
+
+  <a href="<?= base_url('main') ?>" class="back-link">Back to Main</a>
+</div>
+
+<script type="module">
+  import("<?= base_url('assets/js/firebase-auth.js') ?>").then(() => {
+
+    const formTitle = document.getElementById('formTitle');
+    const email = document.getElementById('emailOrPhone');
+    const password = document.getElementById('password');
+    const btnCreate = document.getElementById('btnCreate');
+    const btnLogin = document.getElementById('btnLogin');
+    const btnGoogle = document.getElementById('btnGoogle');
+    const toggleForm = document.getElementById('toggleForm');
+    const baseUrl = "<?= base_url() ?>";
+    let isLoginMode = false;
+
+    btnGoogleMain.onclick = () => {
+      window.firebaseAuth.loginWithGoogle(baseUrl, () => {
+        window.location.href = baseUrl + "permintaan";
+      });
+    }
+
+    toggleForm.addEventListener('click', () => {
+      isLoginMode = !isLoginMode;
+      formTitle.textContent = isLoginMode ? "Masuk" : "Buat Akun";
+      btnCreate.style.display = isLoginMode ? "none" : "block";
+      btnLogin.style.display = isLoginMode ? "block" : "none";
+      toggleForm.innerHTML = isLoginMode 
+        ? `Belum punya akun? <span>Buat akun</span>` 
+        : `Sudah punya akun? <span>Masuk di sini</span>`;
+    });
+
+  btnCreate.onclick = () => firebaseAuth.register(email.value, password.value, baseUrl, () => {
+    window.location.href = baseUrl + "permintaan";
+  });
+
+  btnLogin.onclick = () => firebaseAuth.login(email.value, password.value, baseUrl, () => {
+    window.location.href = baseUrl + "permintaan";
+  });
+
+  btnGoogle.onclick = () => firebaseAuth.loginWithGoogle(baseUrl, () => {
+    window.location.href = baseUrl + "permintaan";
+  });
+});
+</script>
+
+</body>
+</html>
